@@ -128,10 +128,10 @@ abstract contract FRC758 is IFRC758 {
         return amount;
     }
 
-    function setApprovalForAll(address _spender, bool _approved) public override {
+    function setApprovalForAll(address _spender, uint256 amount) public override {
         require(_spender != msg.sender, "FRC758: wrong approval destination");
-        operatorApprovals[msg.sender][_spender] = _approved;
-        emit ApprovalForAll(msg.sender, _spender, _approved);
+        operatorApprovals[msg.sender][_spender] = amount;
+        emit ApprovalForAll(msg.sender, _spender, amount);
     }
 
     function isApprovedForAll(address _owner, address _spender) public view override returns (bool) {
@@ -146,8 +146,9 @@ abstract contract FRC758 is IFRC758 {
         _validateAddress(sender);
         _validateAddress(_recipient);
         _validateAmount(amount);
+        operatorApprovals[sender][msg.sender]  = operatorApprovals[sender][msg.sender].sub(amount);
         _checkRights(isApprovedOrOwner(msg.sender, sender));
-        operatorApprovals[sender][msg.sender]  = false;
+
         if(amount <= balance[sender]) {
             balance[sender] = balance[sender].sub(amount);
             balance[_recipient] = balance[_recipient].add(amount);
@@ -169,8 +170,8 @@ abstract contract FRC758 is IFRC758 {
         _validateAddress(_from);
         _validateAddress(_to);
         _validateAmount(amount);
+        operatorApprovals[_from][msg.sender]  = operatorApprovals[_from][msg.sender].sub(amount);
         _checkRights(isApprovedOrOwner(msg.sender, _from));
-        operatorApprovals[_from][msg.sender]  = false;
         require(_from != _to, "FRC758: can not send to yourself");
         if(tokenStart < block.timestamp) tokenStart = block.timestamp;
         require(tokenStart < tokenEnd, "FRC758: tokenStart>=tokenEnd");
