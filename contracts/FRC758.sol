@@ -44,7 +44,7 @@ abstract contract FRC758 is IFRC758 {
     
     mapping (address => uint256) internal ownedSlicedTokensCount;
 
-    mapping (address => mapping (address => bool)) internal operatorApprovals;
+    mapping (address => mapping (address => uint256)) internal operatorApprovals;
 
     uint256 public totalSupply;
 
@@ -134,34 +134,32 @@ abstract contract FRC758 is IFRC758 {
         emit ApprovalForAll(msg.sender, _spender, amount);
     }
 
-    function isApprovedForAll(address _owner, address _spender) public view override returns (bool) {
+    function isApprovedForAll(address _owner, address _spender) public view override returns (uint256) {
         return operatorApprovals[_owner][_spender];
     }
 
-    function isApprovedOrOwner(address _spender, address _from) public view returns (bool) {
-        return _spender == _from || isApprovedForAll(_from, _spender);
-    }
-
-   function transferFrom(address sender, address _recipient, uint256 amount) public override returns (bool) { 
-        _validateAddress(sender);
-        _validateAddress(_recipient);
+   function transferFrom(address _from, address _to, uint256 amount) public override returns (bool) { 
+        _validateAddress(_from);
+        _validateAddress(_to);
         _validateAmount(amount);
-        operatorApprovals[sender][msg.sender]  = operatorApprovals[sender][msg.sender].sub(amount);
-        _checkRights(isApprovedOrOwner(msg.sender, sender));
 
-        if(amount <= balance[sender]) {
-            balance[sender] = balance[sender].sub(amount);
-            balance[_recipient] = balance[_recipient].add(amount);
+         if(msg.sender != _from) {
+            operatorApprovals[_from][msg.sender]  = operatorApprovals[_from][msg.sender].sub(amount);
+         }
+
+        if(amount <= balance[_from]) {
+            balance[_from] = balance[_from].sub(amount);
+            balance[_to] = balance[_to].add(amount);
             return true;
         }
 
-        uint256 _amount = amount.sub(balance[sender]);        
-        balance[sender] = 0;
+        uint256 _amount = amount.sub(balance[_from]);        
+        balance[_from] = 0;
 
         SlicedToken memory st = SlicedToken({amount: _amount, tokenStart: block.timestamp, tokenEnd: MAX_TIME, next: 0});
-        _subSliceFromBalance(sender, st);
+        _subSliceFromBalance(_from, st);
 
-        balance[_recipient] = balance[_recipient].add(amount);
+        balance[_to] = balance[_to].add(amount);
 
         return true;
     }
@@ -170,8 +168,11 @@ abstract contract FRC758 is IFRC758 {
         _validateAddress(_from);
         _validateAddress(_to);
         _validateAmount(amount);
-        operatorApprovals[_from][msg.sender]  = operatorApprovals[_from][msg.sender].sub(amount);
-        _checkRights(isApprovedOrOwner(msg.sender, _from));
+
+        if(msg.sender != _from) {
+            operatorApprovals[_from][msg.sender] = operatorApprovals[_from][msg.sender].sub(amount);
+        }
+
         require(_from != _to, "FRC758: can not send to yourself");
         if(tokenStart < block.timestamp) tokenStart = block.timestamp;
         require(tokenStart < tokenEnd, "FRC758: tokenStart>=tokenEnd");

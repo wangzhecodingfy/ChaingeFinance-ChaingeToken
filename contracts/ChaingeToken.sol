@@ -42,18 +42,11 @@ contract ChaingeToken is FRC758, Controllable {
     }
 
     function allowance(address owner, address spender) public view returns (uint256) {
-        if(operatorApprovals[owner][spender]) {
-            return 1;
-        }
-        return 0;
+       return operatorApprovals[owner][spender];
     }
 
     function approve(address spender, uint256 amount) public returns (bool) {
-        bool _approved = false;
-        if(amount >0) {
-            _approved = true;
-        }
-        setApprovalForAll(spender, _approved);
+        setApprovalForAll(spender, amount);
         return true;
     }
     
