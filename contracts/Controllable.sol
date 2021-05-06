@@ -1,6 +1,7 @@
 //SPDX-License-Identifier: ChaingeFinance
 pragma solidity = 0.7.6;
 import './Ownable.sol';
+
 abstract contract Controllable is Ownable {
     mapping(address => bool) controllers;
     address[] public addressCount;
@@ -36,3 +37,4 @@ abstract contract Controllable is Ownable {
          addressCount = newAddresses;
     }
 }
+

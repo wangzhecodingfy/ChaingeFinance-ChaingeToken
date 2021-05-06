@@ -27,7 +27,6 @@ contract ChaingeToken is FRC758, Controllable {
         _burnSlice(_from, amount, tokenStart, tokenEnd);
     }
 
-    // If you want to run a test case, you can turn it on. The production environment does not allow this function
     function mintTimeSlice(address _from, uint256 amount, uint256 tokenStart, uint256 tokenEnd) public onlyController {
         _mintSlice(_from, amount, tokenStart, tokenEnd);
     }
@@ -38,15 +37,6 @@ contract ChaingeToken is FRC758, Controllable {
 
     function transfer(address _recipient, uint256 amount) public returns (bool) {
         transferFrom(msg.sender, _recipient, amount);
-        return true;
-    }
-
-    function allowance(address owner, address spender) public view returns (uint256) {
-       return operatorApprovals[owner][spender];
-    }
-
-    function approve(address spender, uint256 amount) public returns (bool) {
-        setApprovalForAll(spender, amount);
         return true;
     }
     

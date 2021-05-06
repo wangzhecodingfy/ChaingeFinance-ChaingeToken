@@ -6,3 +6,4 @@ pragma solidity =0.7.6;
 abstract contract ITimeSlicedTokenReceiver {
     function onTimeSlicedTokenReceived(address _operator, address _from, uint256 amount, uint256 newTokenStart, uint256 newTokenEnd ) virtual public returns(bytes4);
 }
+

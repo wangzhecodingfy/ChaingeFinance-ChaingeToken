@@ -128,13 +128,13 @@ abstract contract FRC758 is IFRC758 {
         return amount;
     }
 
-    function setApprovalForAll(address _spender, uint256 amount) public override {
+    function approve(address _spender, uint256 amount) public override {
         require(_spender != msg.sender, "FRC758: wrong approval destination");
         operatorApprovals[msg.sender][_spender] = amount;
         emit ApprovalForAll(msg.sender, _spender, amount);
     }
 
-    function isApprovedForAll(address _owner, address _spender) public view override returns (uint256) {
+    function allowance(address _owner, address _spender) public view override returns (uint256) {
         return operatorApprovals[_owner][_spender];
     }
 
@@ -150,6 +150,7 @@ abstract contract FRC758 is IFRC758 {
         if(amount <= balance[_from]) {
             balance[_from] = balance[_from].sub(amount);
             balance[_to] = balance[_to].add(amount);
+			emit Transfer(_from, _to, amount, 0, MAX_TIME);
             return true;
         }
 
@@ -160,7 +161,8 @@ abstract contract FRC758 is IFRC758 {
         _subSliceFromBalance(_from, st);
 
         balance[_to] = balance[_to].add(amount);
-
+		
+		emit Transfer(_from, _to, amount, 0, MAX_TIME);
         return true;
     }
     
