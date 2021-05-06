@@ -18,15 +18,19 @@ abstract contract FRC758 is IFRC758 {
         symbol_ = _symbol;
         decimals_ = _decimals;
     }
+
     function name() public view override returns (string memory) {
         return name_;
     }
+
     function symbol() public view override returns (string memory) {
         return symbol_;
     }
+
     function decimals() public view override returns (uint256) {
         return decimals_;
     }
+    
     using SafeMath256 for uint256;
 
 	uint256 public constant MAX_TIME = 18446744073709551615;
