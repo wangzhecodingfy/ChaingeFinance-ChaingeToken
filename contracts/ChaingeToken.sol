@@ -12,7 +12,7 @@ contract ChaingeToken is FRC758, Controllable {
     constructor(string memory name, string memory symbol, uint256 decimals, uint256 limit) FRC758(name, symbol, decimals){
         totalSupply = limit  * 10 ** decimals;
     }
-
+    
 	function mint(address _recipient, uint256 amount) external onlyController {
 		require((amount + circulationSupply) <= totalSupply, "FRC758: can not mint more tokens");
         circulationSupply += amount;

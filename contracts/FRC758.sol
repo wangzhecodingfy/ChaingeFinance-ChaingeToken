@@ -30,7 +30,7 @@ abstract contract FRC758 is IFRC758 {
     function decimals() public view override returns (uint256) {
         return decimals_;
     }
-    
+
     using SafeMath256 for uint256;
 
 	uint256 public constant MAX_TIME = 18446744073709551615;
@@ -148,7 +148,7 @@ abstract contract FRC758 is IFRC758 {
         _validateAmount(amount);
 
          if(msg.sender != _from) {
-            operatorApprovals[_from][msg.sender]  = operatorApprovals[_from][msg.sender].sub(amount);
+            operatorApprovals[_from][msg.sender] = operatorApprovals[_from][msg.sender].sub(amount);
          }
 
         if(amount <= balance[_from]) {
