@@ -18,6 +18,11 @@ task("accounts", "Prints the list of accounts", async (args, hre) => {
  * @type import('hardhat/config').HardhatUserConfig
  */
 module.exports = {
+  paths: {
+    sources: "./contracts",
+    artifacts: "./build/artifacts",
+    cache: "./build/cache",
+  },
   solidity: {
     compilers:[
       {    
